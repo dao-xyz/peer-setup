@@ -13,10 +13,15 @@ sed -i user_conf.d/default.conf.original  -e 's/%DOMAIN%/'$domain'/g' user_conf.
 # IPFS
 export ipfs_staging=$(pwd)/ipfs/staging
 export ipfs_data=$(pwd)/ipfs/data
-sudo docker run -d --name ipfs_host -e IPFS_PROFILE=server -v $ipfs_staging:/export -v $ipfs_data:/data/ipfs -p 4001:4001 -p 127.0.0.1:8080:8080 -p 127.0.0.1:5001:5001 ipfs/go-ipfs:latest --enable-pubsub-experiment
+sudo docker run -d --name ipfs_host -e IPFS_PROFILE=server -v $ipfs_staging:/export -v $ipfs_data:/data/ipfs -p 4001:4001 -p 127.0.0.1:8080:8080 -p 127.0.0.1:5001:5001 ipfs/go-ipfs:latest daemon --enable-pubsub-experiment
 docker_ipfs_ip=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ipfs_host)
-sed -i user_conf.d/default.conf.original  -e 's/%IPFS_IP%/'$docker_ipfs_ip'/g' user_conf.d/default.conf
 
+if [ -z "$docker_ipfs_ip" ] ; then
+  echo "Failed to start IPFS server, no IP obtained from docker container"
+  exit 1
+fi
+
+sed -i user_conf.d/default.conf.original  -e 's/%IPFS_IP%/'$docker_ipfs_ip'/g' user_conf.d/default.conf
 rm user_conf.d/default.conf.original
 
 # Start NGINX
