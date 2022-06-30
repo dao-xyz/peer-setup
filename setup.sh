@@ -21,6 +21,7 @@ rm user_conf.d/default.conf.original
 
 # Start NGINX
 sudo docker run -p 80:80 -p 443:443 -p 4002:4002 \
+    --env CERTBOT_EMAIL=marcus@dao.xyz \
     -v $(pwd)/nginx_secrets:/etc/letsencrypt \
     -v $(pwd)/user_conf.d:/etc/nginx/user_conf.d:ro \
     --name nginx-certbot jonasal/nginx-certbot:latest
