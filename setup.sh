@@ -1,3 +1,5 @@
+#!/bin/bash
+
 sudo apt-get -y install jq
 ipv4=$(dig @resolver4.opendns.com myip.opendns.com +short)
 domain=$(curl -X POST "https://bfbbnhwpfj2ptcmurz6lit4xlu0vjajw.lambda-url.us-east-1.on.aws" \

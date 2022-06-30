@@ -1,5 +1,9 @@
+#!/bin/bash -e
+
+sudo sh ./setup-docker.sh
+
 # IPFS and NGINX
-./setup.sh
+sudo sh ./setup.sh
 
 # Start Shorbit
 echo "Starting client"

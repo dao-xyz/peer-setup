@@ -6,7 +6,7 @@ Stores post data
 wget https://github.com/dao-xyz/peer-setup/archive/master.tar.gz
 tar -zxvf master.tar.gz
 cd peer-setup-master
-./start-post.sh
+sudo sh ./start-post.sh
 ```
 
 ## User data node
@@ -17,7 +17,7 @@ Stores info about users
 wget https://github.com/dao-xyz/peer-setup/archive/master.tar.gz
 tar -zxvf master.tar.gz
 cd peer-setup-master
-./start-user.sh
+sudo sh ./start-user.sh
 ```
 
 ## Trust/key chain node
@@ -29,5 +29,5 @@ Stores trust relationships between keys.
 wget https://github.com/dao-xyz/peer-setup/archive/master.tar.gz
 tar -zxvf master.tar.gz
 cd peer-setup-master
-./start-trust.sh
+sudo sh ./start-trust.sh
 ```
