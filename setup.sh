@@ -1,4 +1,3 @@
-
 sudo apt-get -y install jq
 ipv4=$(dig @resolver4.opendns.com myip.opendns.com +short)
 domain=$(curl -X POST "https://bfbbnhwpfj2ptcmurz6lit4xlu0vjajw.lambda-url.us-east-1.on.aws" \
@@ -20,10 +19,6 @@ rm user_conf.d/default.conf.original
 
 # Start NGINX
 sudo docker run -p 80:80 -p 443:443 -p 4002:4002 \
-    --env CERTBOT_EMAIL=marcus@dao.xyz \
     -v $(pwd)/nginx_secrets:/etc/letsencrypt \
     -v $(pwd)/user_conf.d:/etc/nginx/user_conf.d:ro \
     --name nginx-certbot jonasal/nginx-certbot:latest
-
-# Start Shorbit
-sudo docker run -p 4001:4003 -p 4001:4003/udp -p 127.0.0.1:8080:8080 -p 127.0.0.1:5001:5001 daoxyz/social-peer
