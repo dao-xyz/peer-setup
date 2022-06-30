@@ -26,10 +26,6 @@ sudo docker run -d -p 80:80 -p 443:443 -p 4002:4002 \
     -v $(pwd)/user_conf.d:/etc/nginx/user_conf.d:ro \
     --name nginx-certbot jonasal/nginx-certbot:latest
 
-
 echo "Setup complete"
 echo "Peer is now live with domain"
 echo $domain
-
-
-c7a6e70a2b0cbc04fa9942026f32d62de7a171e5.peerchecker.com
