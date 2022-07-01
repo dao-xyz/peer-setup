@@ -19,7 +19,9 @@ sed -i user_conf.d/default.conf.original  -e 's/%DOMAIN%/'$domain'/g' user_conf.
 export ipfs_staging=$(pwd)/ipfs/staging
 export ipfs_data=$(pwd)/ipfs/data
 sudo docker run -d --name ipfs_host -e IPFS_PROFILE=server -v $ipfs_staging:/export -v $ipfs_data:/data/ipfs -p 4001:4001 -p 127.0.0.1:8080:8080 -p 127.0.0.1:8081:8081  -p 127.0.0.1:5001:5001 ipfs/go-ipfs:latest daemon --enable-pubsub-experiment
+sleep 10s
 sudo docker exec ipfs_host ipfs bootstrap rm --all
+sudo docker exec ipfs_host ipfs config Addresses.Gateway /ip4/0.0.0.0/tcp/8080
 sudo docker exec ipfs_host ipfs config Addresses.Swarm '["/ip4/0.0.0.0/tcp/4001", "/ip4/0.0.0.0/tcp/8081/ws", "/ip6/::/tcp/4001"]' --json
 sudo docker stop ipfs_host
 sudo docker start ipfs_host
