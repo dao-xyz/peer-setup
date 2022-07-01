@@ -24,7 +24,7 @@ sudo docker exec ipfs_host ipfs config Addresses.Gateway /ip4/0.0.0.0/tcp/8080
 sudo docker exec ipfs_host ipfs config Addresses.Swarm '["/ip4/0.0.0.0/tcp/4001", "/ip4/0.0.0.0/tcp/8081/ws", "/ip6/::/tcp/4001"]' --json
 sudo docker stop ipfs_host
 sudo docker start ipfs_host
-
+sleep 10s
 docker_ipfs_ip=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ipfs_host)
 
 if [ -z "$docker_ipfs_ip" ] ; then
