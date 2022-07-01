@@ -1,5 +1,4 @@
 #!/bin/bash
-
 sudo apt-get -y install jq
 ipv4=$(dig @resolver4.opendns.com myip.opendns.com +short)
 domain=$(curl -X POST "https://bfbbnhwpfj2ptcmurz6lit4xlu0vjajw.lambda-url.us-east-1.on.aws" \
@@ -18,7 +17,7 @@ sed -i user_conf.d/default.conf.original  -e 's/%DOMAIN%/'$domain'/g' user_conf.
 # IPFS
 export ipfs_staging=$(pwd)/ipfs/staging
 export ipfs_data=$(pwd)/ipfs/data
-sudo docker run -d --name ipfs_host -e IPFS_PROFILE=server -v $ipfs_staging:/export -v $ipfs_data:/data/ipfs -p 4001:4001 -p 127.0.0.1:8080:8080 -p 127.0.0.1:8081:8081  -p 127.0.0.1:5001:5001 ipfs/go-ipfs:latest daemon --enable-pubsub-experiment
+sudo docker run -d --name ipfs_host -e IPFS_PROFILE=server --net=host ipfs/go-ipfs:latest daemon --enable-pubsub-experiment --migrate
 sleep 10s
 sudo docker exec ipfs_host ipfs bootstrap rm --all
 sudo docker exec ipfs_host ipfs config Addresses.Gateway /ip4/0.0.0.0/tcp/8080
@@ -37,7 +36,7 @@ sed -i user_conf.d/default.conf.original  -e 's/%IPFS_IP%/'$docker_ipfs_ip'/g' u
 rm user_conf.d/default.conf.original
 
 # Start NGINX
-sudo docker run -d -p 80:80 -p 443:443 -p 4002:4002 \
+sudo docker run -d --net=host \
     --env CERTBOT_EMAIL=marcus@dao.xyz \
     -v $(pwd)/nginx_secrets:/etc/letsencrypt \
     -v $(pwd)/user_conf.d:/etc/nginx/user_conf.d:ro \
