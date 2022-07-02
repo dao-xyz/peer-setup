@@ -17,22 +17,17 @@ sed -i user_conf.d/default.conf.original  -e 's/%DOMAIN%/'$domain'/g' user_conf.
 # IPFS
 export ipfs_staging=$(pwd)/ipfs/staging
 export ipfs_data=$(pwd)/ipfs/data
-sudo docker run -d --name ipfs_host -e IPFS_PROFILE=server --net=host ipfs/go-ipfs:latest daemon --enable-pubsub-experiment --migrate
+sudo docker run -d --name ipfs_host -e IPFS_PROFILE=server --net=host ipfs/go-ipfs:latest daemon --enable-pubsub-experiment --migrate --routing=none
 sleep 10s
 sudo docker exec ipfs_host ipfs bootstrap rm --all
 sudo docker exec ipfs_host ipfs config Addresses.Gateway /ip4/0.0.0.0/tcp/8080
 sudo docker exec ipfs_host ipfs config Addresses.Swarm '["/ip4/0.0.0.0/tcp/4001", "/ip4/0.0.0.0/tcp/8081/ws", "/ip6/::/tcp/4001"]' --json
+sudo docker exec ipfs_host ipfs config Discovery.MDNS '{
+      "Enabled": false
+    }' --json
 sudo docker stop ipfs_host
 sudo docker start ipfs_host
-sleep 10s
-docker_ipfs_ip=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ipfs_host)
 
-if [ -z "$docker_ipfs_ip" ] ; then
-  echo "Failed to start IPFS server, no IP obtained from docker container"
-  exit 1
-fi
-
-sed -i user_conf.d/default.conf.original  -e 's/%IPFS_IP%/'$docker_ipfs_ip'/g' user_conf.d/default.conf
 rm user_conf.d/default.conf.original
 
 # Start NGINX
