@@ -17,7 +17,7 @@ sed -i user_conf.d/default.conf.original  -e 's/%DOMAIN%/'$domain'/g' user_conf.
 # IPFS
 export ipfs_staging=$(pwd)/ipfs/staging
 export ipfs_data=$(pwd)/ipfs/data
-sudo docker run -d --name ipfs_host -e IPFS_PROFILE=server --net=host ipfs/go-ipfs:latest daemon --enable-pubsub-experiment --migrate --routing=none
+sudo docker run -d --name ipfs_host -v $ipfs_staging:/export -v $ipfs_data:/data/ipfs -e IPFS_PROFILE=server --net=host ipfs/go-ipfs:latest daemon --enable-pubsub-experiment --migrate --routing=none
 sleep 10s
 sudo docker exec ipfs_host ipfs bootstrap rm --all
 sudo docker exec ipfs_host ipfs config Addresses.Gateway /ip4/0.0.0.0/tcp/8080
@@ -28,6 +28,9 @@ sudo docker exec ipfs_host ipfs config Discovery.MDNS '{
 sudo docker stop ipfs_host
 sudo docker start ipfs_host
 
+export ipfs_id=$(sudo docker exec ipfs_host ipfs id | jq -r ".ID") 
+
+# rm original conf of nginx before starting (to prevent it from beeing used)
 rm user_conf.d/default.conf.original
 
 # Start NGINX
