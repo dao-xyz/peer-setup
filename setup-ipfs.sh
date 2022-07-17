@@ -1,7 +1,7 @@
 #!/bin/bash
 sudo apt-get -y install jq
 ipv4=$(dig @resolver4.opendns.com myip.opendns.com +short)
-domain=$(curl -X POST "https://bfbbnhwpfj2ptcmurz6lit4xlu0vjajw.lambda-url.us-east-1.on.aws" \
+export domain=$(curl -X POST "https://bfbbnhwpfj2ptcmurz6lit4xlu0vjajw.lambda-url.us-east-1.on.aws" \
    -H "Content-Type: application/json" \
    -d '"'$ipv4'"' | jq -r '.domain') 
 
@@ -25,11 +25,9 @@ sudo docker exec ipfs_host ipfs config Addresses.Swarm '["/ip4/0.0.0.0/tcp/4001"
 sudo docker exec ipfs_host ipfs config Discovery.MDNS '{
       "Enabled": false
     }' --json
+export ipfs_id=$(sudo docker exec ipfs_host ipfs id | jq -r ".ID") 
 sudo docker stop ipfs_host
 sudo docker start ipfs_host
-
-export ipfs_id=$(sudo docker exec ipfs_host ipfs id | jq -r ".ID") 
-
 
 sed -i user_conf.d/default.conf.original  -e 's/%IPFS_ID%/'$ipfs_id'/g' user_conf.d/default.conf
 
